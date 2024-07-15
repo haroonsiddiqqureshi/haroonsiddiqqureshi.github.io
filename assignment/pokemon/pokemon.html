@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pokedex</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+    <div class="container mx-auto p-4">
+        <div class="flex justify-center mb-6">
+            <img src="image/pokemon/logo.png" alt="pokemon" class="w-48 h-auto" />
+        </div>
+        <div id="pokemon" class="grid gap-4 grid-cols-1 md:grid-cols-4"></div>
+    </div>
+    <script>
+        function fetchPokemonData(url) {
+            return fetch(url)
+                .then(response => response.json())
+                .then(data => ({
+                    id: data.id,
+                    name: data.name,
+                    image: data.sprites.other['official-artwork'].front_default
+                }));
+        }
+
+        fetch("https://pokeapi.co/api/v2/pokemon")
+            .then(res => res.json())
+            .then(async (data) => {
+                const datas = data.results;
+                const ele = document.getElementById("pokemon");
+
+                for (const pokemon of datas) {
+                    const pokemonData = await fetchPokemonData(pokemon.url);
+                    ele.innerHTML += `
+                        <a href="pokemon_detail/detail.html?id=${pokemonData.id}" class='bg-white shadow-lg p-2 mb-2 rounded-lg text-center'>
+                            <img src='${pokemonData.image}' alt='${pokemonData.name}' class='mx-auto w-24 h-24 object-contain' />
+                            <div class='text-lg font-medium'>${pokemonData.name}</div>
+                        </a>
+                    `;
+                }
+            })
+            .catch(err => console.error(err));
+    </script>
+</body>
+
+</html>

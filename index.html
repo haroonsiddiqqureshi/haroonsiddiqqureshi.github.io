@@ -61,12 +61,14 @@
 
 			function goToAssignment() {
 				const assignment = document.getElementById('assignment').value;
-				window.location.href = 'assignment/' + assignment + '.html';
+				// Open the assignment page in a new tab
+				window.open('assignment/' + assignment + '/' + assignment + '.html', '_blank');
 			}
 
 			function goToClassAssignment() {
 				const class_assignment = document.getElementById('class_assignment').value;
-				window.location.href = 'class_assignment/' + class_assignment + '.html';
+				// Open the assignment page in a new tab
+				window.open('class_assignment/' + class_assignment + '/'  + class_assignment + '.html', '_blank');
 			}
 		</script>
 
