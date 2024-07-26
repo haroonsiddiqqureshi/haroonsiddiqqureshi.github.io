@@ -13,7 +13,7 @@
         <h1 id="ability-heading" class="text-4xl font-extrabold text-center text-white mb-4 bg-orange-300 p-4 rounded-lg">
             <!-- Title -->
         </h1>
-        <div id="pokemon-by-ability" class="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
+        <div id="pokemon-by-ability" class="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
             <!-- Pokemon list will appear here -->
         </div>
         <div class="flex justify-center mt-4 space-x-2">
@@ -30,7 +30,7 @@
     </div>
     <script>
         let offset = 0;
-        const limit = 21;
+        const limit = 18;
         const baseUrl = "https://pokeapi.co/api/v2/ability/";
 
         function getQueryParameter(name) {
