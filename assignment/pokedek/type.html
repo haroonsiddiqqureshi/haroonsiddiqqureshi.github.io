@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pokemon by Type</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-orange-100">
+    <div class="container mx-auto p-4">
+        <h1 id="type-heading" class="text-4xl font-extrabold text-center text-white mb-4 bg-orange-300 p-4 rounded-lg">
+            <!-- Title -->
+        </h1>
+        <div id="pokemon-by-type" class="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
+            <!-- Pokemon list will appear here -->
+        </div>
+        <div class="flex justify-center mt-4 space-x-2">
+            <button id="back" class="font-semibold bg-white hover:bg-orange-300 text-orange-300 hover:text-white px-4 py-2 rounded-lg shadow-lg transition duration-300 ease-in-out" disabled>
+                Back
+            </button>
+            <a href="pokedek.html" class="font-semibold bg-orange-300 text-white px-4 py-2 hover:bg-white hover:text-orange-300 rounded-lg shadow-lg transition duration-300 ease-in-out">
+                Pokedex
+            </a>
+            <button id="next" class="font-semibold bg-white hover:bg-orange-300 text-orange-300 hover:text-white px-4 py-2 rounded-lg shadow-lg transition duration-300 ease-in-out">
+                Next
+            </button>
+        </div>
+    </div>
+    <script>
+        let offset = 0;
+        const limit = 21;
+        const baseUrl = "https://pokeapi.co/api/v2/type/";
+
+        function getQueryParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        function fetchPokemonData(url) {
+            return fetch(url)
+                .then(response => response.json())
+                .then(data => ({
+                    id: data.id,
+                    name: data.name,
+                    image: data.sprites.other['official-artwork'].front_default
+                }));
+        }
+
+        function fetchPokemonsByType(type, offset, limit) {
+            return fetch(`${baseUrl}${type}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("type-heading").textContent = `${data.name.charAt(0).toUpperCase() + data.name.slice(1)}`;
+                    const pokemonPromises = data.pokemon.slice(offset, offset + limit).map(pokemon => fetchPokemonData(pokemon.pokemon.url));
+                    return Promise.all(pokemonPromises);
+                });
+        }
+
+        function loadPokemonData() {
+            const type = getQueryParameter('type');
+            if (type) {
+                fetchPokemonsByType(type, offset, limit)
+                    .then(pokemons => {
+                        const ele = document.getElementById("pokemon-by-type");
+                        ele.innerHTML = pokemons.map(pokemon => `
+                            <a href="detail.html?id=${pokemon.id}" class="bg-white p-4 rounded-lg text-center border border-orange-200 shadow-sm hover:bg-orange-300 text-orange-300 hover:text-white transition duration-300 ease-in-out">
+                                <img src='${pokemon.image}' alt='${pokemon.name}' class='mx-auto w-24 h-24 object-contain' />
+                                <div class='text-md font-semibold mt-2'>${pokemon.name}</div>
+                            </a>
+                        `).join('');
+                        document.getElementById("back").disabled = offset === 0;
+                        document.getElementById("next").disabled = pokemons.length < limit;
+                    })
+                    .catch(err => console.error(err));
+            } else {
+                document.getElementById("pokemon-by-type").innerHTML = "<p class='text-center text-red-500'>No Pokémon type found.</p>";
+            }
+        }
+
+        document.getElementById("next").addEventListener("click", () => {
+            offset += limit;
+            loadPokemonData();
+        });
+
+        document.getElementById("back").addEventListener("click", () => {
+            if (offset > 0) {
+                offset -= limit;
+                loadPokemonData();
+            }
+        });
+
+        loadPokemonData();
+    </script>
+</body>
+
+</html>

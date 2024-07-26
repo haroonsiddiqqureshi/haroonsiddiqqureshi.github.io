@@ -2,75 +2,79 @@
 <html lang="en">
 
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>Index</title>
-	<link rel="stylesheet" href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Index</title>
+    <link rel="stylesheet" href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css" />
 </head>
 
 <body class="font-sans antialiased text-gray-900 leading-normal tracking-wider bg-cover">
 
-	<div class="max-w-4xl flex items-center h-screen flex-wrap mx-auto my-0">
+    <div class="max-w-4xl mx-auto my-8 px-4 sm:px-6 lg:px-8">
 
-		<!--Main Col-->
-		<div class="w-full rounded-xl shadow-2xl mx-0">
+        <!-- Main Col -->
+        <div class="w-full rounded-xl shadow-2xl mx-auto">
 
-			<div class="p-12 text-start">
+            <div class="p-6 sm:p-8 lg:p-12 text-center">
 
-				<h1 class="text-2xl font-bold pt-0 text-center">Main Page</h1>
-				<div class="mx-0 pt-2 border-b-2 border-green-700"></div>
-				<p class="text-base font-bold pt-2 text-center">งานทั้งหมดของ นายฮารูณ ซิดดิ๊ก คูเรซิ</p>
+                <h1 class="text-xl sm:text-2xl font-bold text-center">Main Page</h1>
+                <div class="mx-auto mt-2 border-b-2 border-green-700 w-1/2 sm:w-1/3"></div>
+                <p class="text-sm sm:text-base font-bold mt-2 text-center">งานทั้งหมดของ นายฮารูณ ซิดดิ๊ก คูเรซิ</p>
 
-				<!-- Assignment -->
-				<p class="pt-8 text-sm font-semibold text-green-700">Assignment</p>
-				<div class="pt-1 pb-1 flex">
-					<div class="font-bold py-2 px-4 ml-1 border-2 rounded-l-xl w-full border-green-700">
-						<select id="assignment" class="w-full opacity-50">
-							<option value="profile">Profile</option>
-						</select>
-					</div>
-					<button class="bg-green-700 hover:bg-green-900 text-white font-bold py-2 px-4"
-						onclick="goToAssignment()">
-						Go
-					</button>
-				</div>
-				<!-- Class Assignment -->
-				<p class="pt-8 text-sm font-semibold text-green-700">Class Assignment</p>
-				<div class="pb-4 flex">
-					<div class="font-bold py-2 px-4 ml-1 border-2 rounded-l-xl w-full border-green-700">
-						<select id="class_assignment" class="w-full opacity-50">
-							<option value="js_todo_application">JS Todo Application</option>
-						</select>
-					</div>
-					<button class="bg-green-700 hover:bg-green-900 text-white font-bold py-2 px-4"
-						onclick="goToClassAssignment()">
-						Go
-					</button>
-				</div>
-			</div>
-		</div>
+                <!-- Assignment -->
+                <p class="mt-8 text-sm sm:text-base font-semibold text-green-700">Assignment</p>
+                <div class="mt-2 flex flex-col sm:flex-row items-center justify-center">
+                    <div class="font-bold py-2 px-4 border-2 rounded-lg sm:rounded-l-xl w-full sm:w-2/3 border-green-700">
+                        <select id="assignment" class="w-full opacity-75">
+                            <!-- Add Assignment Here! -->
+                            <option value="profile">Profile</option>
+                            <option value="pokedek">Pokedek</option>
+                        </select>
+                    </div>
+                    <button class="mt-2 sm:mt-0 bg-green-700 hover:bg-green-900 text-white font-bold py-2 px-4 sm:ml-2"
+                        onclick="goToAssignment()">
+                        Go
+                    </button>
+                </div>
+                
+                <!-- Class Assignment -->
+                <p class="mt-8 text-sm sm:text-base font-semibold text-green-700">Class Assignment</p>
+                <div class="mt-2 flex flex-col sm:flex-row items-center justify-center">
+                    <div class="font-bold py-2 px-4 border-2 rounded-lg sm:rounded-l-xl w-full sm:w-2/3 border-green-700">
+                        <select id="class_assignment" class="w-full opacity-75">
+                            <!-- Add Class Assignment Here! -->
+                            <option value="js_todo_application">JS Todo Application</option>
+                        </select>
+                    </div>
+                    <button class="mt-2 sm:mt-0 bg-green-700 hover:bg-green-900 text-white font-bold py-2 px-4 sm:ml-2"
+                        onclick="goToClassAssignment()">
+                        Go
+                    </button>
+                </div>
+            </div>
+        </div>
 
-		<script src="https://unpkg.com/popper.js@1/dist/umd/popper.min.js"></script>
-		<script src="https://unpkg.com/tippy.js@4"></script>
-		<script>
-			//Init tooltips
-			tippy('.link', {
-				placement: 'bottom'
-			});
+        <script src="https://unpkg.com/popper.js@1/dist/umd/popper.min.js"></script>
+        <script src="https://unpkg.com/tippy.js@4"></script>
+        <script>
+            // Init tooltips
+            tippy('.link', {
+                placement: 'bottom'
+            });
 
-			function goToAssignment() {
-				const assignment = document.getElementById('assignment').value;
-				// Open the assignment page in a new tab
-				window.open('assignment/' + assignment + '/' + assignment + '.html', '_blank');
-			}
+            function goToAssignment() {
+                const assignment = document.getElementById('assignment').value;
+                window.open('assignment/' + assignment + '/' + assignment + '.html', '_blank');
+            }
 
-			function goToClassAssignment() {
-				const class_assignment = document.getElementById('class_assignment').value;
-				// Open the assignment page in a new tab
-				window.open('class_assignment/' + class_assignment + '/'  + class_assignment + '.html', '_blank');
-			}
-		</script>
+            function goToClassAssignment() {
+                const class_assignment = document.getElementById('class_assignment').value;
+                window.open('class_assignment/' + class_assignment + '/' + class_assignment + '.html', '_blank');
+            }
+        </script>
+
+    </div>
 
 </body>
 

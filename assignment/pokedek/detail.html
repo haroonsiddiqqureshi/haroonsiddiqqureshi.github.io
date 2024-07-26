@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pokemon Detail</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body class="bg-orange-100">
+    <div class="container mx-auto p-4">
+        <h1 class="text-3xl font-extrabold text-center text-white bg-orange-300 p-4 rounded-t-lg shadow-xl max-w-sm mx-auto">
+            Pokemon Detail
+        </h1>
+        <div id="pokemon-detail" class="bg-white p-4 rounded-b-lg border border-orange-200 shadow-lg max-w-sm mx-auto">
+        </div>
+        <div class="text-center mt-8">
+            <a href="pokedek.html" class="bg-orange-300 text-white font-bold px-4 py-2 rounded-lg shadow-md hover:bg-orange-400 transition duration-300 ease-in-out">
+                <i class="fas fa-arrow-left"></i> Back to Pokedex
+            </a>
+        </div>
+    </div>
+    <script>
+        function getQueryParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        function fetchPokemonData(id) {
+            return fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
+                .then(response => response.json())
+                .then(data => ({
+                    id: data.id,
+                    name: data.name,
+                    image: data.sprites.other['official-artwork'].front_default,
+                    height: data.height,
+                    weight: data.weight,
+                    types: data.types.map(typeInfo => typeInfo.type.name),
+                    stats: data.stats.map(stat => ({
+                        name: stat.stat.name,
+                        value: stat.base_stat
+                    })),
+                    abilities: data.abilities.map(abilityInfo => abilityInfo.ability.name)
+                }));
+        }
+
+        function createTypeLink(type) {
+            return `<a href="type.html?type=${type}" class="text-orange-500 hover:underline"><i class="fas fa-cube"></i> ${type}</a>`;
+        }
+
+        function createAbilityLink(ability) {
+            return `<a href="ability.html?ability=${ability}" class="text-orange-500 hover:underline"><i class="fas fa-star"></i> ${ability}</a>`;
+        }
+
+        function getStatIcon(statName) {
+            switch (statName) {
+                case 'hp':
+                    return '<i class="fas fa-heart"></i>';
+                case 'attack':
+                    return '<i class="fas fa-fist-raised"></i>';
+                case 'defense':
+                    return '<i class="fas fa-shield-alt"></i>';
+                case 'special-attack':
+                    return '<i class="fas fa-bolt"></i>';
+                case 'special-defense':
+                    return '<i class="fas fa-shield"></i>';
+                case 'speed':
+                    return '<i class="fas fa-tachometer-alt"></i>';
+                default:
+                    return '';
+            }
+        }
+
+        const pokemonId = getQueryParameter('id');
+
+        if (pokemonId) {
+            fetchPokemonData(pokemonId)
+                .then(pokemon => {
+                    const ele = document.getElementById("pokemon-detail");
+                    ele.innerHTML = `
+                        <img src='${pokemon.image}' alt='${pokemon.name}' class='mx-auto w-32 h-32 object-contain' />
+                        <h2 class='text-xl font-bold text-center mt-4'>${pokemon.name}</h2>
+                        <p class='text-center mt-2'><i class="fas fa-ruler-combined"></i> <strong>Height:</strong> ${pokemon.height / 10} m</p>
+                        <p class='text-center'><i class="fas fa-weight-hanging"></i> <strong>Weight:</strong> ${pokemon.weight / 10} kg</p>
+                        <p class='text-center mt-2'><strong>Types:</strong> ${pokemon.types.map(createTypeLink).join(', ')}</p>
+                        <p class='text-center'><strong>Abilities:</strong> ${pokemon.abilities.map(createAbilityLink).join(', ')}</p>
+                        <h3 class='text-lg font-semibold mt-4'>Stats:</h3>
+                        <ul class='list-disc list-inside'>
+                            ${pokemon.stats.map(stat => `<li>${getStatIcon(stat.name)} <strong>${stat.name.replace('-', ' ')}:</strong> ${stat.value}</li>`).join('')}
+                        </ul>
+                    `;
+                })
+                .catch(err => console.error(err));
+        } else {
+            document.getElementById("pokemon-detail").innerHTML = "<p class='text-center text-red-500'>No Pokémon ID found.</p>";
+        }
+    </script>
+</body>
+
+</html>

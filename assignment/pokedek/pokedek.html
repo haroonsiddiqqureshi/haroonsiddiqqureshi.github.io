@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pokedex</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-orange-100">
+    <div class="container mx-auto p-4">
+        <h1 class="text-4xl font-extrabold text-center text-white mb-4 bg-orange-300 p-4 rounded-lg">
+            Pokedex
+        </h1>
+        <div id="pokemon" class="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
+        </div>
+        <div class="flex justify-center mt-4 space-x-4">
+            <button id="back" class="font-semibold bg-white hover:bg-orange-300 text-orange-300 hover:text-white px-4 py-2 rounded-lg shadow-lg transition duration-300 ease-in-out" disabled>
+                Back
+            </button>
+            <button id="next" class="font-semibold bg-white hover:bg-orange-300 text-orange-300 hover:text-white px-4 py-2 rounded-lg shadow-lg transition duration-300 ease-in-out">
+                Next
+            </button>
+        </div>
+    </div>
+    <script>
+        let offset = 0;
+        const limit = 21;
+        const baseUrl = "https://pokeapi.co/api/v2/pokemon";
+
+        async function fetchPokemonData(url) {
+            return fetch(url)
+                .then(response => response.json())
+                .then(data => ({
+                    id: data.id,
+                    name: data.name,
+                    image: data.sprites.other['official-artwork'].front_default
+                }));
+        }
+
+        async function loadPokemonData() {
+            const response = await fetch(`${baseUrl}?offset=${offset}&limit=${limit}`);
+            const data = await response.json();
+            const ele = document.getElementById("pokemon");
+
+            ele.innerHTML = ''; // Clear previous Pokémon
+
+            for (const pokemon of data.results) {
+                const pokemonData = await fetchPokemonData(pokemon.url);
+                ele.innerHTML += `
+                    <a href="detail.html?id=${pokemonData.id}" class="bg-white p-4 rounded-lg text-center border border-orange-200 shadow-sm hover:bg-orange-300 text-orange-300 hover:text-white transition duration-300 ease-in-out">
+                        <img src='${pokemonData.image}' alt='${pokemonData.name}' class='mx-auto w-24 h-24 object-contain' />
+                        <div class='text-md font-semibold mt-2'>${pokemonData.name}</div>
+                    </a>
+                `;
+            }
+
+            document.getElementById("back").disabled = offset === 0;
+            document.getElementById("next").disabled = data.results.length < limit;
+        }
+
+        document.getElementById("next").addEventListener("click", () => {
+            offset += limit;
+            loadPokemonData();
+        });
+
+        document.getElementById("back").addEventListener("click", () => {
+            if (offset > 0) {
+                offset -= limit;
+                loadPokemonData();
+            }
+        });
+
+        // Load initial data
+        loadPokemonData();
+    </script>
+</body>
+
+</html>
