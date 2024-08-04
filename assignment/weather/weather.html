@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gradient-to-r from-blue-400 to-blue-600 flex items-center justify-center h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-md">
+        <h1 id="appTitle" class="text-4xl font-extrabold mb-6 text-center text-blue-600">สภาพอากาศ</h1>
+        <div id="inputSection">
+            <input type="text" id="cityInput" placeholder="กรอกชื่อจังหวัด/รัฐ"
+                class="w-full p-4 border border-gray-300 rounded-lg mb-4 text-gray-700 placeholder-gray-500 focus:outline-none focus:border-blue-600">
+            <button id="getWeatherBtn" class="w-full bg-blue-600 text-white p-4 rounded-lg hover:bg-blue-700 transition duration-300">ตรวจสอบ</button>
+        </div>
+        <div id="loading" class="text-center mt-4 hidden">
+            <p class="text-blue-700 text-2xl font-semibold">กำลังโหลด...</p>
+        </div>
+        <div id="weatherInfo" class="mt-4 text-gray-900 hidden"></div>
+        <button id="newSearchBtn" class="mt-4 w-full bg-gray-300 text-gray-800 p-4 rounded-lg hover:bg-gray-400 transition duration-300 hidden">ค้นหาสำหรับเมืองใหม่</button>
+    </div>
+    <script>
+        document.getElementById('getWeatherBtn').addEventListener('click', function () {
+            const city = document.getElementById('cityInput').value;
+            if (city) {
+                getWeather(city);
+            }
+        });
+
+        document.getElementById('newSearchBtn').addEventListener('click', function () {
+            document.getElementById('weatherInfo').classList.add('hidden');
+            document.getElementById('newSearchBtn').classList.add('hidden');
+            document.getElementById('inputSection').classList.remove('hidden');
+            document.getElementById('appTitle').innerText = 'สภาพอากาศ'; // Reset title
+        });
+
+        async function getWeather(city) {
+            const apiKey = 'c73453f131e33e6f34293f0435b00d2b';
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('weatherInfo').innerHTML = '';
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error('City not found');
+                }
+                const data = await response.json();
+                displayWeather(data);
+                document.getElementById('inputSection').classList.add('hidden');
+                document.getElementById('newSearchBtn').classList.remove('hidden');
+            } catch (error) {
+                document.getElementById('weatherInfo').innerHTML = `<p class="text-red-600 font-bold">${error.message}</p>`;
+            } finally {
+                document.getElementById('loading').classList.add('hidden');
+            }
+        }
+
+        function displayWeather(data) {
+            // Update the title with the city name
+            document.getElementById('appTitle').innerText = data.name;
+
+            const weatherInfo = `
+                <div>
+                    <p class="text-xl"><strong>อุณหภูมิ:</strong> ${data.main.temp} °C</p>
+                    <p class="text-xl"><strong>ความชื้น:</strong> ${data.main.humidity} %</p>
+                    <p class="text-xl"><strong>แรงลม:</strong> ${data.wind.speed} m/s</p>
+                    <p class="text-xl"><strong>ความกดอากาศ:</strong> ${data.main.pressure} hPa</p>
+                    <p class="text-xl"><strong>สภาพอากาศ:</strong> ${data.weather[0].description}</p>
+                </div>
+            `;
+            document.getElementById('weatherInfo').innerHTML = weatherInfo;
+            document.getElementById('weatherInfo').classList.remove('hidden');
+        }
+    </script>
+</body>
+
+</html>
